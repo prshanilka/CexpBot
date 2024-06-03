@@ -93,9 +93,6 @@ class Slapper:
             response.raise_for_status()
 
             response_json = await response.json()
-            # access_token = response_json['accessToken']
-
-            #return access_token
             return response_json
         except Exception as error:
             logger.error(f"{self.session_name} | Unknown error while getting Access Token: {error}")
@@ -190,7 +187,7 @@ class Slapper:
                     availableTaps = profile_data['availableTaps']
                     # farmReward = profile_data['farmReward']
                     # zeroTapWindowFinishAt = profile_data['zeroTapWindowFinishAt']
-                    # currentTapWindowFinishIn = profile_data['currentTapWindowFinishIn']
+                    currentTapWindowFinishIn = profile_data['currentTapWindowFinishIn']
                     # serverTime = profile_data['serverTime']
 
                     miningEraIntervalInSeconds = profile_data['miningEraIntervalInSeconds']
@@ -206,7 +203,15 @@ class Slapper:
                         logger.info(f"| Earned: <g>{taps}</g>")
                         logger.info(f"{self.session_name} | Balance: <c>{balance}</c>")
                     else:
-                        logger.info(f"Available taps are zero")
+                        currentTapWindowFinishInSeconds = (currentTapWindowFinishIn / 1000)
+                        if currentTapWindowFinishInSeconds < miningEraIntervalInSeconds:
+                            logger.info(f"Sleep {currentTapWindowFinishInSeconds}s")
+                            await asyncio.sleep(delay=currentTapWindowFinishInSeconds)
+                        else:
+                            logger.info(f"Sleep {miningEraIntervalInSeconds}s")
+                            await asyncio.sleep(delay=miningEraIntervalInSeconds)
+
+                        
 
                     mining_era_start_time = datetime.fromisoformat(farmStartedAt.replace("Z", "+00:00"))
                     mining_era_end_time = mining_era_start_time + timedelta(seconds=miningEraIntervalInSeconds)
