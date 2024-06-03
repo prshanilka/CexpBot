@@ -210,9 +210,7 @@ class Slapper:
                         else:
                             logger.info(f"Sleep {miningEraIntervalInSeconds}s")
                             await asyncio.sleep(delay=miningEraIntervalInSeconds)
-
                         
-
                     mining_era_start_time = datetime.fromisoformat(farmStartedAt.replace("Z", "+00:00"))
                     mining_era_end_time = mining_era_start_time + timedelta(seconds=miningEraIntervalInSeconds)
                     current_time = datetime.now(timezone.utc)
