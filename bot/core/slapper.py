@@ -217,6 +217,9 @@ class Slapper:
 
                     logger.info(f"Still in mining era current-{current_time}  end-{mining_era_end_time}")
                     if current_time > mining_era_end_time:
+                        sleep_between_api_calls = randint(a=5, b=10)
+                        await asyncio.sleep(delay=sleep_between_api_calls)
+                        logger.info(f"Sleep {sleep_between_api_calls}s")
                         logger.info(f"Claiming farmed cexp")
                         await self.claimFarm(http_client=http_client,tg_web_data=tg_web_data)
                         logger.info(f"Sleep 4s")
